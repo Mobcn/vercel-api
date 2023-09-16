@@ -1,0 +1,6 @@
+{
+    "type": "module",
+    "imports": {
+        "#handler": "./handler/index.js"
+    }
+}
