@@ -1,3 +1,5 @@
+import MongoDB from '#mongodb';
+
 /**
  * @typedef {{
  *     methods?: string | string[]
@@ -38,6 +40,26 @@ class VHandler {
     }
 
     /**
+     * GET请求处理创建
+     *
+     * @param {(query: VercelRequestQuery, request: VercelRequest, response: VercelResponse) => any} controller 控制器
+     * @param {VHandlerSetting} setting 请求处理器设置
+     */
+    static buildGET(controller, setting) {
+        return VHandler.build(controller, Object.assign({}, setting, { methods: 'GET' }));
+    }
+
+    /**
+     * POST请求处理创建
+     *
+     * @param {(query: VercelRequestQuery, request: VercelRequest, response: VercelResponse) => any} controller 控制器
+     * @param {VHandlerSetting} setting 请求处理器设置
+     */
+    static buildPOST(controller, setting) {
+        return VHandler.build(controller, Object.assign({}, setting, { methods: 'POST' }));
+    }
+
+    /**
      * 请求处理创建
      *
      * @param {(query: VercelRequestQuery, request: VercelRequest, response: VercelResponse) => any} controller 控制器
@@ -64,7 +86,8 @@ class VHandler {
                 response.status(500).end(`非法的请求方法: ${request.method}`);
                 return;
             }
-            Promise.resolve(controller(request.query, request, response))
+            MongoDB.connect()
+                .then(() => controller(request.query, request, response))
                 .then((result) => {
                     response.status(200);
                     if (typeof result === 'object') {
@@ -74,8 +97,9 @@ class VHandler {
                     }
                 })
                 .catch((error) => {
-                    response.status(500).end('服务器错误');
-                });
+                    response.status(500).end(`服务器错误: ${error.message}`);
+                })
+                .finally(() => MongoDB.disconnect());
         };
     }
 }

@@ -1,6 +1,11 @@
 {
     "type": "module",
     "imports": {
-        "#handler": "./handler/index.js"
+        "#handler": "./handler/index.js",
+        "#mongodb": "./dao/database/mongodb.js",
+        "#dao/*": "./dao/*"
+    },
+    "dependencies": {
+        "mongoose": "^6.8.1"
     }
 }
