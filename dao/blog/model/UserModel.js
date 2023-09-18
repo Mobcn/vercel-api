@@ -3,8 +3,9 @@ import mongoose, { Schema } from 'mongoose';
 /**
  * 用户表
  */
-const table = {
-    name: 's_user',
+const info = {
+    name: 'User',
+    table: 's_user',
     schema: {
         // 昵称
         nickname: {
@@ -66,8 +67,4 @@ const table = {
     }
 };
 
-const UserSchema = new Schema(table.schema);
-const UserModel = mongoose.model(table.name, UserSchema);
-
-export { UserSchema };
-export default UserModel;
+export const Model = mongoose.model(info.name, new Schema(info.schema), info.table);

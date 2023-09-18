@@ -1,8 +1,12 @@
 /**
+ * @template T
+ * @typedef {T extends import('mongoose').Model<infer U> ? U : unknown} ExtractProps
+ */
+
+/**
  * 基础数据访问
  *
  * @template {import('mongoose').Model} TModel
- * @template {import('mongoose').Schema} TSchema
  */
 class BaseDAO {
     /**
@@ -25,11 +29,11 @@ class BaseDAO {
     /**
      * 获取所有数据
      *
-     * @returns {Promise<Array<import('mongoose').InferSchemaType<TSchema> & { _id: string, __v: number }>>}
+     * @returns {Promise<Array<ExtractProps<TModel> & { _id: string, __v: number }>>}
      */
     async listAll() {
         return await this.Model.find();
     }
 }
 
-export default BaseDAO;
+export { BaseDAO };

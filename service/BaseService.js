@@ -1,11 +1,15 @@
-import BaseDAO from '#dao/BaseDAO.js';
+import { BaseDAO } from '#dao/BaseDAO.js';
+
+/**
+ * @template T
+ * @typedef {T extends BaseDAO<infer U> ? U : unknown} ExtractModel
+ */
 
 /**
  * 基础服务
  *
- * @template {BaseDAO<TModel, TSchema>} TDAO
+ * @template {BaseDAO<TModel>} TDAO
  * @template {import('mongoose').Model} TModel
- * @template {import('mongoose').Schema} TSchema
  */
 class BaseService {
     /**
@@ -33,4 +37,4 @@ class BaseService {
     }
 }
 
-export default BaseService;
+export { BaseService };
