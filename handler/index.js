@@ -1,4 +1,4 @@
-import MongoDB from '#mongodb';
+import DB from '#db';
 
 /**
  * @typedef {{
@@ -86,20 +86,22 @@ class VHandler {
                 response.status(500).end(`非法的请求方法: ${request.method}`);
                 return;
             }
-            MongoDB.connect()
-                .then(() => controller(request.query, request, response))
-                .then((result) => {
+            (async () => {
+                try {
+                    DB.connect();
+                    const result = await controller(request.query, request, response);
                     response.status(200);
                     if (typeof result === 'object') {
                         response.json(result);
                     } else {
                         response.end(JSON.stringify(result));
                     }
-                })
-                .catch((error) => {
+                } catch (error) {
                     response.status(500).end(`服务器错误: ${error.message}`);
-                })
-                .finally(() => MongoDB.disconnect());
+                } finally {
+                    DB.disconnect();
+                }
+            })();
         };
     }
 }

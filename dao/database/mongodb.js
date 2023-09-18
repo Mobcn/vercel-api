@@ -4,12 +4,10 @@ const databaseName = 'vercel-api';
 
 /**
  * MongoDB数据库工具
+ * @type {import('./db.js').DB}
  */
 const MongoDB = {
-    /**
-     * 开启数据库连接
-     */
-    connect: async () => {
+    connect: async (callback) => {
         if (!process.env.MONGODB_URI) {
             throw new Error('缺少环境变量`MONGODB_URI`');
         }
@@ -18,12 +16,10 @@ const MongoDB = {
         const search = index !== -1 ? uri.substring(index) : '';
         index = uri.lastIndexOf('/');
         uri = uri.substring(0, index + 1) + databaseName + search;
-        return await mongoose.connect(uri);
+        await mongoose.connect(uri);
+        callback && callback();
     },
 
-    /**
-     * 关闭数据库连接
-     */
     disconnect: () => mongoose.disconnect()
 };
 

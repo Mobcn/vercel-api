@@ -66,4 +66,8 @@ const table = {
     }
 };
 
-export default mongoose.model(table.name, new Schema(table.schema));
+const UserSchema = new Schema(table.schema);
+const UserModel = mongoose.model(table.name, UserSchema);
+
+export { UserSchema };
+export default UserModel;

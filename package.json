@@ -2,8 +2,9 @@
     "type": "module",
     "imports": {
         "#handler": "./handler/index.js",
-        "#mongodb": "./dao/database/mongodb.js",
-        "#dao/*": "./dao/*"
+        "#db": "./dao/database/db.js",
+        "#dao/*": "./dao/*",
+        "#service/*": "./service/*"
     },
     "dependencies": {
         "mongoose": "^6.8.1"
