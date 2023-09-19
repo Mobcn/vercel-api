@@ -4,7 +4,7 @@ const databaseName = 'vercel-api';
 
 /**
  * MongoDB数据库工具
- * @type {import('./db.js').DB}
+ * @type {import('#db').DB}
  */
 const MongoDB = {
     connect: async (callback) => {

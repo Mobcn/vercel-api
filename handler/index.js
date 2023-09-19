@@ -1,5 +1,17 @@
 import DB from '#db';
 
+/** @typedef {import('http').IncomingMessage} IncomingMessage 消息 */
+/** @typedef {import('http').ServerResponse} ServerResponse 响应 */
+/** @typedef {{ [key: string]: string }} VercelRequestCookies Vercel请求Cookie */
+/** @typedef {{ [key: string]: string | string[] }} VercelRequestQuery Vercel请求参数 */
+/** @typedef {any} VercelRequestBody Vercel请求体 */
+/** @typedef {(body: any) => VercelResponse} SendFun 发送响应 */
+/** @typedef {(jsonBody: any) => VercelResponse} JSONFun 响应JSON */
+/** @typedef {(statusCode: number) => VercelResponse} StatusFun 响应状态设置 */
+/** @typedef {(statusOrUrl: string | number, url?: string) => VercelResponse} RedirectFun 重定向 */
+/** @typedef {IncomingMessage & { query: VercelRequestQuery; cookies: VercelRequestCookies; body: VercelRequestBody; }} VercelRequest Vercel请求 */
+/** @typedef {ServerResponse & { send: SendFun; json: JSONFun; status: StatusFun; redirect: RedirectFun; }} VercelResponse Vercel响应 */
+
 /**
  * @typedef {{
  *     methods?: string | string[]
@@ -89,20 +101,64 @@ class VHandler {
             (async () => {
                 try {
                     DB.connect();
-                    const result = await controller(request.query, request, response);
+                    const result = await controller(Object.assign({}, request.query, request.body), request, response);
                     response.status(200);
                     if (typeof result === 'object') {
-                        response.json(result);
+                        response.json(result instanceof Result ? result : Result.success({ data: result }));
                     } else {
-                        response.end(JSON.stringify(result));
+                        response.end(Result.success({ data: JSON.stringify(result) }));
                     }
                 } catch (error) {
-                    response.status(500).end(`服务器错误: ${error.message}`);
+                    response.json(Result.error({ message: error.message }));
                 } finally {
                     DB.disconnect();
                 }
             })();
         };
+    }
+}
+
+/**
+ * 返回数据对象
+ */
+export class Result {
+    /** 响应码 */
+    code;
+
+    /** 响应消息 */
+    message;
+
+    /** 响应数据 */
+    data;
+
+    /**
+     * @param {Object} param0 参数
+     * @param {number} [param0.code=0] 响应码
+     * @param {string} [param0.message='成功!'] 响应消息
+     * @param {any} param0.data 响应数据
+     */
+    constructor({ code = 0, message = '成功!', data }) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
+
+    /**
+     * 成功
+     *
+     * @param {{ code?: number; message?: string; data?: any }} params 结果参数
+     */
+    static success(params) {
+        return new Result(params ?? {});
+    }
+
+    /**
+     * 错误
+     *
+     * @param {{ code?: number; message?: string }} params 结果参数
+     */
+    static error(params) {
+        return new Result(Object.assign({ code: -1, message: '失败!' }, params));
     }
 }
 

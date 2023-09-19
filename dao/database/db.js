@@ -1,4 +1,4 @@
-import MongoDB from "./mongodb.js";
+import MongoDB from "#dao/database/mongodb.js";
 
 /**
  * @typedef {Object} DB 数据库

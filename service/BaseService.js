@@ -1,14 +1,17 @@
-import { BaseDAO } from '#dao/BaseDAO.js';
+/**
+ * @template T
+ * @typedef {T extends import('#dao/BaseDAO').BaseDAO<infer U> ? U : T} ExtractModel
+ */
 
 /**
  * @template T
- * @typedef {T extends BaseDAO<infer U> ? U : unknown} ExtractModel
+ * @typedef {import("#dao/BaseDAO").RawDocType<T>} RawDocType
  */
 
 /**
  * 基础服务
  *
- * @template {BaseDAO<TModel>} TDAO
+ * @template {import('#dao/BaseDAO').BaseDAO<TModel>} TDAO
  * @template {import('mongoose').Model} TModel
  */
 class BaseService {
@@ -34,6 +37,15 @@ class BaseService {
      */
     async listAll() {
         return await this.DAO.listAll();
+    }
+
+    /**
+     * 添加
+     *
+     * @param {RawDocType<ExtractModel<TDAO>>} data
+     */
+    async save(data) {
+        return await this.DAO.insert(data);
     }
 }
 

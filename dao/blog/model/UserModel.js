@@ -4,9 +4,16 @@ import mongoose, { Schema } from 'mongoose';
  * 用户表
  */
 const info = {
-    name: 'User',
+    /** 模型名 */
+    model: 'User',
+
+    /** 表名 */
     table: 's_user',
-    schema: {
+
+    /**
+     * 表字段属性
+     */
+    property: {
         // 昵称
         nickname: {
             type: String,
@@ -67,4 +74,4 @@ const info = {
     }
 };
 
-export const Model = mongoose.model(info.name, new Schema(info.schema), info.table);
+export const Model = mongoose.model(info.model, new Schema(info.property), info.table);
