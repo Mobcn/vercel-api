@@ -1,13 +1,10 @@
-import VHandler from '#handler';
-
-export default VHandler.buildGET(
-    /**
-     * @param {any} query 请求参数
-     */
-    (query) => {
-        return {
-            content: 'hello',
-            ...query
-        };
-    }
-);
+/**
+ * @param {import('#handler').VercelRequest} request
+ * @param {import('#handler').VercelResponse} response
+ */
+export default function handler(request, response) {
+    response.status(200).json({
+        content: 'hello',
+        ...request.query
+    });
+}
