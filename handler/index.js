@@ -164,9 +164,7 @@ class VHandler {
                         resolve();
                     })
                     .catch((error) => reject(error));
-            })
-                .catch((error) => response.json(Result.error({ message: error.message })))
-                .finally(() => DB.disconnect());
+            }).catch((error) => response.json(Result.error({ message: error.message })));
         };
     }
 }
