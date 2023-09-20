@@ -12,6 +12,5 @@ export default function handler(request, response) {
         DB.connect(() => resolve((flag = true))).catch((error) => reject(error));
     })
         .then(() => response.status(200).end('连接成功！'))
-        .catch((error) => response.status(500).end(`连接失败: ${error.message}`))
-        .finally(() => DB.disconnect());
+        .catch((error) => response.status(500).end(`连接失败: ${error.message}`));
 }
