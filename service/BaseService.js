@@ -40,12 +40,40 @@ class BaseService {
     }
 
     /**
+     * 获取主键ID对应的数据
+     *
+     * @param {any} id 主键ID
+     */
+    async getById(id) {
+        return await this.DAO.getById(id);
+    }
+
+    /**
      * 添加
      *
-     * @param {RawDocType<ExtractModel<TDAO>>} data
+     * @param {RawDocType<ExtractModel<TDAO>>} data 添加的数据
      */
     async save(data) {
         return await this.DAO.insert(data);
+    }
+
+    /**
+     * 删除主键ID对应的数据
+     *
+     * @param {any} id 主键ID
+     */
+    async removeById(id) {
+        return await this.DAO.deleteById(id);
+    }
+
+    /**
+     * 更新主键ID对应的数据
+     *
+     * @param {any} id
+     * @param {import('mongoose').FilterQuery<RawDocType<ExtractModel<TDAO>>>} update 更新的数据
+     */
+    async updateById(id, update) {
+        return await this.DAO.updateById(id, update);
     }
 }
 

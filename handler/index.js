@@ -98,22 +98,21 @@ class VHandler {
                 response.status(500).end(`非法的请求方法: ${request.method}`);
                 return;
             }
-            (async () => {
-                try {
-                    DB.connect();
-                    const result = await controller(Object.assign({}, request.query, request.body), request, response);
-                    response.status(200);
-                    if (typeof result === 'object') {
-                        response.json(result instanceof Result ? result : Result.success({ data: result }));
-                    } else {
-                        response.end(Result.success({ data: JSON.stringify(result) }));
+            Promise.all([
+                DB.connect(),
+                Promise.resolve(controller(Object.assign({}, request.query, request.body), request, response)).then(
+                    (result) => {
+                        response.status(200);
+                        if (typeof result === 'object') {
+                            response.json(result instanceof Result ? result : Result.success({ data: result }));
+                        } else {
+                            response.end(Result.success({ data: JSON.stringify(result) }));
+                        }
                     }
-                } catch (error) {
-                    response.json(Result.error({ message: error.message }));
-                } finally {
-                    DB.disconnect();
-                }
-            })();
+                )
+            ])
+                .catch((error) => response.json(Result.error({ message: error.message })))
+                .finally(() => DB.disconnect());
         };
     }
 }
