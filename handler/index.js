@@ -151,17 +151,20 @@ class VHandler {
                 response.status(500).end('没有权限');
                 return;
             }
-            Promise.all([
-                DB.connect(),
-                Promise.resolve(controller(params, request, response)).then((result) => {
-                    response.status(200);
-                    if (typeof result === 'object') {
-                        response.json(result instanceof Result ? result : Result.success({ data: result }));
-                    } else {
-                        response.end(Result.success({ data: JSON.stringify(result) }));
-                    }
-                })
-            ])
+            new Promise((resolve, reject) => {
+                DB.connect().catch((error) => reject(error));
+                Promise.resolve(controller(params, request, response))
+                    .then((result) => {
+                        response.status(200);
+                        if (typeof result === 'object') {
+                            response.json(result instanceof Result ? result : Result.success({ data: result }));
+                        } else {
+                            response.end(Result.success({ data: JSON.stringify(result) }));
+                        }
+                        resolve();
+                    })
+                    .catch((error) => reject(error));
+            })
                 .catch((error) => response.json(Result.error({ message: error.message })))
                 .finally(() => DB.disconnect());
         };
