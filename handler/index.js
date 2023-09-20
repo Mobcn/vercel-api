@@ -1,4 +1,5 @@
 import DB from '#db';
+import jsonwebtoken from 'jsonwebtoken';
 
 /** @typedef {import('http').IncomingMessage} IncomingMessage 消息 */
 /** @typedef {import('http').ServerResponse} ServerResponse 响应 */
@@ -14,7 +15,8 @@ import DB from '#db';
 
 /**
  * @typedef {{
- *     methods?: string | string[]
+ *     methods?: string | string[],
+ *     authorized?: boolean
  * }} VHandlerSetting 请求处理器设置
  */
 
@@ -62,6 +64,16 @@ class VHandler {
     }
 
     /**
+     * GET请求及认证处理创建
+     *
+     * @param {(query: VercelRequestQuery & { __token_data__: any }, request: VercelRequest, response: VercelResponse) => any} controller 控制器
+     * @param {VHandlerSetting} setting 请求处理器设置
+     */
+    static buildGETAndAuth(controller, setting) {
+        return VHandler.build(controller, Object.assign({}, setting, { methods: 'GET', authorized: true }));
+    }
+
+    /**
      * POST请求处理创建
      *
      * @param {(query: VercelRequestQuery, request: VercelRequest, response: VercelResponse) => any} controller 控制器
@@ -72,13 +84,27 @@ class VHandler {
     }
 
     /**
+     * POST请求及认证处理创建
+     *
+     * @param {(query: VercelRequestQuery & { __token_data__: any }, request: VercelRequest, response: VercelResponse) => any} controller 控制器
+     * @param {VHandlerSetting} setting 请求处理器设置
+     */
+    static buildPOSTAndAuth(controller, setting) {
+        return VHandler.build(controller, Object.assign({}, setting, { methods: 'POST', authorized: true }));
+    }
+
+    /**
      * 请求处理创建
      *
      * @param {(query: VercelRequestQuery, request: VercelRequest, response: VercelResponse) => any} controller 控制器
      * @param {VHandlerSetting} setting 请求处理器设置
      */
     static build(controller, setting) {
-        /** @type {(method: string) => boolean} */
+        /**
+         * 请求方法检查
+         *
+         * @type {(method: string) => boolean}
+         */
         let methodCheck = () => true;
         if (setting?.methods) {
             if (typeof setting.methods === 'string') {
@@ -87,29 +113,54 @@ class VHandler {
                 methodCheck = (method) => setting.methods.includes(method.toUpperCase());
             }
         }
+        /**
+         * 认证检查
+         *
+         * @type {(params: any, request: VercelRequest) => boolean}
+         */
+        let authorizedCheck = () => true;
+        if (setting?.authorized) {
+            authorizedCheck = (params, request) => {
+                const authorization = request.headers['authorization'];
+                if (!authorization?.startsWith('Bearer ')) {
+                    return false;
+                }
+                const token = authorization.replace('Bearer ', '');
+                let result = true;
+                try {
+                    params['__token_data__'] = JWT.verify(token);
+                } catch (error) {
+                    result = false;
+                }
+                return result;
+            };
+        }
 
         /**
          * @param {VercelRequest} request 请求对象
          * @param {VercelResponse} response 响应对象
          */
         return function handler(request, response) {
+            const params = Object.assign({}, request.query, request.body);
             response.setHeader('Content-Type', 'text/html;charset=UTF-8');
             if (!methodCheck(request.method)) {
                 response.status(500).end(`非法的请求方法: ${request.method}`);
                 return;
             }
+            if (!authorizedCheck(params, request)) {
+                response.status(500).end('没有权限');
+                return;
+            }
             Promise.all([
                 DB.connect(),
-                Promise.resolve(controller(Object.assign({}, request.query, request.body), request, response)).then(
-                    (result) => {
-                        response.status(200);
-                        if (typeof result === 'object') {
-                            response.json(result instanceof Result ? result : Result.success({ data: result }));
-                        } else {
-                            response.end(Result.success({ data: JSON.stringify(result) }));
-                        }
+                Promise.resolve(controller(params, request, response)).then((result) => {
+                    response.status(200);
+                    if (typeof result === 'object') {
+                        response.json(result instanceof Result ? result : Result.success({ data: result }));
+                    } else {
+                        response.end(Result.success({ data: JSON.stringify(result) }));
                     }
-                )
+                })
             ])
                 .catch((error) => response.json(Result.error({ message: error.message })))
                 .finally(() => DB.disconnect());
@@ -160,5 +211,34 @@ export class Result {
         return new Result(Object.assign({ code: -1, message: '失败!' }, params));
     }
 }
+
+/**
+ * JWT工具
+ */
+export const JWT = {
+    /**
+     * JWT签名
+     *
+     * @param {any} data token数据
+     */
+    sign: (data) => {
+        if (!process.env.JWT_SECRET_KEY) {
+            throw new Error('缺少环境变量`JWT_SECRET_KEY`');
+        }
+        return jsonwebtoken.sign(data, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+    },
+
+    /**
+     * JWT校验
+     *
+     * @param {string} token token
+     */
+    verify: (token) => {
+        if (!process.env.JWT_SECRET_KEY) {
+            throw new Error('缺少环境变量`JWT_SECRET_KEY`');
+        }
+        return jsonwebtoken.verify(token, process.env.JWT_SECRET_KEY);
+    }
+};
 
 export default VHandler;

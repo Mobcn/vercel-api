@@ -35,6 +35,15 @@ class UserService extends BaseService {
         }
         return user;
     }
+
+    /**
+     * 删除
+     *
+     * @param {string} id 主键ID
+     */
+    async destroy(id) {
+        return await this.removeById(id);
+    }
 }
 
 const userService = new UserService(userDAO);

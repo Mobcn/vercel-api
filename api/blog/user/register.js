@@ -4,7 +4,7 @@ import { userService } from '#service/blog/UserService.js';
 /**
  * 注册用户
  */
-export default VHandler.buildPOST(
+export default VHandler.buildPOSTAndAuth(
     /**
      * @param {Object} param0 请求参数
      * @param {string} param0.username 用户名
