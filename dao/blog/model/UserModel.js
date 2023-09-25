@@ -63,13 +63,13 @@ const info = {
         // 创建时间
         create_time: {
             type: Date,
-            default: new Date()
+            default: Date.now
         },
 
         // 更新时间
         update_time: {
             type: Date,
-            default: new Date()
+            default: Date.now
         }
     }
 };
