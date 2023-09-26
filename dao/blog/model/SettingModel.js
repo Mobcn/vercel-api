@@ -32,3 +32,5 @@ const info = {
 };
 
 export const Model = mongoose.model(info.model, new Schema(info.property), info.table);
+
+/** @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} Setting */

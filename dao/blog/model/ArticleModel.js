@@ -26,11 +26,7 @@ const info = {
             maxlength: 256
         },
         category: String,
-        tag: String,
-        topping: {
-            type: Boolean,
-            default: false
-        },
+        top_time: Date,
         views: {
             type: Number,
             default: 0
@@ -51,3 +47,5 @@ const info = {
 };
 
 export const Model = mongoose.model(info.model, new Schema(info.property), info.table);
+
+/** @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} Article */

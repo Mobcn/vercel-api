@@ -7,6 +7,8 @@
 const info = ${e};
 
 export const Model = mongoose.model(info.model, new Schema(info.property), info.table);
+
+/** @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} ${r} */
 `}function getDAOFileText(e,r){const a=r.replace(r[0],r[0].toLowerCase());return`import { BaseDAO } from '#dao/BaseDAO.js';
 import { Model } from '#dao/${e}/model/${r}Model.js';
 
