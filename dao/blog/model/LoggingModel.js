@@ -1,49 +1,33 @@
 import mongoose, { Schema } from 'mongoose';
 
 /**
- * Article表
+ * Logging表
  */
 const info = {
-    model: "Article",
-    table: "b_article",
+    model: "Logging",
+    table: "s_logging",
     property: {
-        title: {
+        operation: {
             type: String,
             required: true,
             trim: true,
-            minlength: 5,
-            maxlength: 128
+            maxlength: 256
         },
-        description: {
+        params: {
             type: String,
             trim: true,
             maxlength: 256
         },
-        content: String,
-        cover: {
+        result: {
             type: String,
             trim: true,
             maxlength: 256
-        },
-        category: String,
-        tag: String,
-        topping: {
-            type: Boolean,
-            default: false
-        },
-        views: {
-            type: Number,
-            default: 0
         },
         status: {
             type: Number,
             default: 1
         },
         create_time: {
-            type: Date,
-            default: Date.now
-        },
-        update_time: {
             type: Date,
             default: Date.now
         }

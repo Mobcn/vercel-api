@@ -1,40 +1,30 @@
 import mongoose, { Schema } from 'mongoose';
 
 /**
- * Article表
+ * Tag表
  */
 const info = {
-    model: "Article",
-    table: "b_article",
+    model: "Tag",
+    table: "d_tag",
     property: {
-        title: {
+        name: {
             type: String,
             required: true,
             trim: true,
-            minlength: 5,
+            minlength: 2,
             maxlength: 128
         },
         description: {
             type: String,
+            required: true,
             trim: true,
             maxlength: 256
         },
-        content: String,
-        cover: {
-            type: String,
-            trim: true,
-            maxlength: 256
-        },
-        category: String,
-        tag: String,
-        topping: {
-            type: Boolean,
-            default: false
-        },
-        views: {
+        article_amount: {
             type: Number,
             default: 0
         },
+        sort: Number,
         status: {
             type: Number,
             default: 1
