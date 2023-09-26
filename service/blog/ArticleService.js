@@ -39,9 +39,10 @@ class ArticleService extends BaseService {
                 $or: [{ title: new RegExp(key) }, { description: new RegExp(key) }, { content: new RegExp(key) }]
             });
         }
-        (startTime || endTime) && condition.push({ create_time: { $gte: startTime, $lte: endTime } });
-        category && condition.push({ category: { $in: categories } });
-        return await articleDAO.list({ filter: { $and: condition }, page, limit });
+        startTime && condition.push({ create_time: { $gte: startTime } });
+        endTime && condition.push({ create_time: { $lte: endTime } });
+        categories && condition.push({ category: { $in: categories } });
+        return await articleDAO.list({ filter: condition.length > 0 ? { $and: condition } : undefined, page, limit });
     }
 
     /**

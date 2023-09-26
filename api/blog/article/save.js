@@ -4,7 +4,7 @@ import { articleService } from '#service/blog/ArticleService.js';
 /**
  * 保存文章
  */
-export default VHandler.buildGET(
+export default VHandler.buildPOST(
     /**
      * @param {Object} param0 请求参数
      * @param {string | undefined} param0.title 标题
