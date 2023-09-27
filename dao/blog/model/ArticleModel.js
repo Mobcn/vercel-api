@@ -35,6 +35,10 @@ const info = {
             type: Number,
             default: 1
         },
+        author: {
+            type: String,
+            required: true
+        },
         create_time: {
             type: Date,
             default: Date.now
@@ -48,4 +52,6 @@ const info = {
 
 export const Model = mongoose.model(info.model, new Schema(info.property), info.table);
 
-/** @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} Article */
+/**
+ * @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} Article
+ */

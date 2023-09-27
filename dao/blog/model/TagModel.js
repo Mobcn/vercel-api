@@ -20,15 +20,6 @@ const info = {
             trim: true,
             maxlength: 256
         },
-        article_amount: {
-            type: Number,
-            default: 0
-        },
-        sort: Number,
-        status: {
-            type: Number,
-            default: 1
-        },
         create_time: {
             type: Date,
             default: Date.now
@@ -42,4 +33,6 @@ const info = {
 
 export const Model = mongoose.model(info.model, new Schema(info.property), info.table);
 
-/** @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} Tag */
+/**
+ * @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} Tag
+ */
