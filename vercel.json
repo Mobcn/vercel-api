@@ -20,8 +20,8 @@
     ],
     "rewrites": [
         {
-            "source": "/:module/:path*",
-            "destination": "/api/:module/:path*"
+            "source": "/(.*)",
+            "destination": "/api/index"
         }
     ]
 }

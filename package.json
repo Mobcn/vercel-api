@@ -4,7 +4,8 @@
         "#handler": "./handler/index.js",
         "#db": "./dao/database/db.js",
         "#dao/*": "./dao/*",
-        "#service/*": "./service/*"
+        "#service/*": "./service/*",
+        "#controller/*": "./controller/*"
     },
     "dependencies": {
         "jsonwebtoken": "^9.0.2",
