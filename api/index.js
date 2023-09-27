@@ -7,11 +7,12 @@ export default function handler(request, response) {
     console.log(`#controller${pathname}.js`);
     import(`#controller${pathname}.js`)
         .then(({ default: handler }) => handler(request, response))
-        .catch((error) => {
-            if (error.code === 'ERR_MODULE_NOT_FOUND') {
-                response.status(404).end();
-            } else {
-                response.status(500).end(error.message);
-            }
-        });
+        // .catch((error) => {
+        //     if (error.code === 'ERR_MODULE_NOT_FOUND') {
+        //         response.status(404).end();
+        //     } else {
+        //         response.status(500).end(error.message);
+        //     }
+        // })
+        .finally(() => response.end());
 }
