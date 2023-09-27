@@ -19,18 +19,20 @@ const info = {
             trim: true,
             maxlength: 2048
         },
-        is_public: {
-            type: Boolean,
-            default: false
-        },
         description: {
             type: String,
             trim: true,
             maxlength: 256
+        },
+        is_public: {
+            type: Boolean,
+            default: false
         }
     }
 };
 
 export const Model = mongoose.model(info.model, new Schema(info.property), info.table);
 
-/** @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} Setting */
+/**
+ * @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} Setting
+ */

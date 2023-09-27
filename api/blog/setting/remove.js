@@ -1,8 +1,8 @@
 import VHandler, { Result } from '#handler';
-import { categoryService } from '#service/blog/CategoryService.js';
+import { settingService } from '#service/blog/SettingService.js';
 
 /**
- * 删除分类
+ * 删除设置
  */
 export default VHandler.buildPOSTAndAuth(
     /**
@@ -14,7 +14,7 @@ export default VHandler.buildPOSTAndAuth(
         if (!__token_data__.is_admin) {
             throw new Error('没有权限!');
         }
-        await categoryService.removeById(_id);
+        await settingService.removeById(_id);
         Result.success({ message: '删除成功!' });
     }
 );

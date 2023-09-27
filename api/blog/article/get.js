@@ -7,7 +7,7 @@ import { articleService } from '#service/blog/ArticleService.js';
 export default VHandler.buildGET(
     /**
      * @param {Object} param0 请求参数
-     * @param {string} param0._id 文章ID
+     * @param {string} param0._id 主键ID
      */
     async ({ _id }) => await articleService.getById(_id)
 );

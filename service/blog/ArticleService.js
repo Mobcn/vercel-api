@@ -256,7 +256,7 @@ class ArticleService extends BaseService {
             throw new Error('没有删除权限!');
         }
 
-        return await super(_id);
+        return await super.removeById(_id);
     }
 }
 

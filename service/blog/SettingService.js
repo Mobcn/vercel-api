@@ -6,10 +6,18 @@ import { settingDAO } from '#dao/blog/SettingDAO.js';
 
 /**
  * Setting服务
- * 
+ *
  * @extends {BaseService<DAO, Model>}
  */
-class SettingService extends BaseService {}
+class SettingService extends BaseService {
+    /**
+     * @param {boolean} isPublic 是否为公告配置
+     */
+    async list(isPublic = true) {
+        const settingList = await this.DAO.list({ filter: { is_public: isPublic }, limit: 99999999 });
+        return settingList.map((item) => ({ key: item.key, value: item.value }));
+    }
+}
 
 const settingService = new SettingService(settingDAO);
 export { SettingService, settingService };

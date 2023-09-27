@@ -7,7 +7,7 @@ import { articleService } from '#service/blog/ArticleService.js';
 export default VHandler.buildPOSTAndAuth(
     /**
      * @param {Object} param0 请求参数
-     * @param {string} param0._id 文章ID
+     * @param {string} param0._id 主键ID
      * @param {import('#dao/blog/model/UserModel').User} param0.__token_data__ token携带用户数据
      */
     async ({ _id, __token_data__ }) => await articleService.removeById(_id, __token_data__)

@@ -12,7 +12,8 @@ const info = {
             required: true,
             trim: true,
             minlength: 2,
-            maxlength: 128
+            maxlength: 128,
+            unique: true
         },
         description: {
             type: String,
