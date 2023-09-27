@@ -10,17 +10,14 @@ const info = {
         operation: {
             type: String,
             required: true,
-            trim: true,
             maxlength: 256
         },
         params: {
             type: String,
-            trim: true,
             maxlength: 256
         },
         result: {
             type: String,
-            trim: true,
             maxlength: 256
         },
         status: {
@@ -36,4 +33,6 @@ const info = {
 
 export const Model = mongoose.model(info.model, new Schema(info.property), info.table);
 
-/** @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} Logging */
+/**
+ * @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} Logging
+ */
