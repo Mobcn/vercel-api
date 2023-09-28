@@ -13,10 +13,10 @@ const router = {
     '/blog/tag/all': import('#controller/blog/tag/all.js'),
     '/blog/tag/remove': import('#controller/blog/tag/remove.js'),
     '/blog/tag/save': import('#controller/blog/tag/save.js'),
-    '/blog/blog/user/all': import('#controller/blog/user/all.js'),
-    '/blog/blog/user/destroy': import('#controller/blog/user/destroy.js'),
-    '/blog/blog/user/login': import('#controller/blog/user/login.js'),
-    '/blog/blog/user/register': import('#controller/blog/user/register.js')
+    '/blog/user/all': import('#controller/blog/user/all.js'),
+    '/blog/user/destroy': import('#controller/blog/user/destroy.js'),
+    '/blog/user/login': import('#controller/blog/user/login.js'),
+    '/blog/user/register': import('#controller/blog/user/register.js')
 };
 
 /**
