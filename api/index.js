@@ -55,5 +55,4 @@ export default function handler(request, response) {
     // }
     import('#controller/blog/tag/all.js')
         .then(({ default: handler }) => handler(request, response))
-        .finally(() => response.end());
 }
