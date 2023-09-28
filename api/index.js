@@ -30,6 +30,6 @@ export default function handler(request, response) {
             .then(({ default: handler }) => handler(request, response))
             .catch((error) => response.status(500).end(error.message));
     } else {
-        response.status(404).end();
+        response.status(404).end(JSON.stringify(import.meta.glob("#controller")));
     }
 }
