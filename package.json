@@ -7,6 +7,10 @@
         "#service/*": "./service/*",
         "#controller/*": "./controller/*"
     },
+    "scripts": {
+        "local": "node build-api.js && vercel dev",
+        "build-api": "node build-api.js"
+    },
     "dependencies": {
         "jsonwebtoken": "^9.0.2",
         "mongoose": "^7.5.2"

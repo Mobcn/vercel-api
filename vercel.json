@@ -23,5 +23,27 @@
             "source": "/(.*)",
             "destination": "/api/index"
         }
+    ],
+    "redirects": [
+        {
+            "source": "/controller/(.*)",
+            "destination": "/",
+            "permanent": true
+        },
+        {
+            "source": "/service/(.*)",
+            "destination": "/",
+            "permanent": true
+        },
+        {
+            "source": "/dao/(.*)",
+            "destination": "/",
+            "permanent": true
+        },
+        {
+            "source": "/handler/(.*)",
+            "destination": "/",
+            "permanent": true
+        }
     ]
 }

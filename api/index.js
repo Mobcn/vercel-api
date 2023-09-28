@@ -23,7 +23,9 @@ const router = {
     '/blog/user/all': () => import('#controller/blog/user/all.js'),
     '/blog/user/destroy': () => import('#controller/blog/user/destroy.js'),
     '/blog/user/login': () => import('#controller/blog/user/login.js'),
-    '/blog/user/register': () => import('#controller/blog/user/register.js')
+    '/blog/user/register': () => import('#controller/blog/user/register.js'),
+    '/test/db': () => import('#controller/test/db.js'),
+    '/test/index': () => import('#controller/test/index.js')
 };
 
 /**
@@ -31,7 +33,7 @@ const router = {
  * @param {VercelResponse} response 响应对象
  */
 export default function handler(request, response) {
-    const { pathname } = new URL(request.url, `http://${request.headers.host}`);
+    const { pathname } = new URL(request.url, 'http://' + request.headers.host);
     if (Object.keys(router).includes(pathname)) {
         router[pathname]()
             .then(({ default: handler }) => handler(request, response))
