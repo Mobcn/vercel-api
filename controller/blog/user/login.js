@@ -15,22 +15,21 @@ export default VHandler.buildPOST(
         let resultToken;
         const authorization = request.headers['authorization'];
         if (authorization?.startsWith('Bearer ')) {
-            resultToken = authorization.replace('Bearer ', '');
+            const token = authorization.replace('Bearer ', '');
             try {
-                JWT.verify(resultToken);
+                JWT.verify(token);
+                resultToken = token;
             } catch (error) {
                 if (error.name === 'TokenExpiredError') {
                     const expiredTime = Date.now() - error.expiredAt.getTime();
+                    // 过期时间小于7天则刷新token
                     if (expiredTime < 7 * 24 * 60 * 60 * 1000) {
-                        /** @type {import('#dao/blog/model/UserModel').User} */
-                        const user = JWT.verify(resultToken, true);
-                        delete user['iat'];
-                        delete user['exp'];
-                        resultToken = JWT.sign(user);
+                        resultToken = JWT.sign(JWT.verify(token, true));
                     }
                 }
             }
-        } else {
+        }
+        if (!resultToken) {
             const user = await userService.login(username, password);
             resultToken = JWT.sign(user.toJSON());
         }
