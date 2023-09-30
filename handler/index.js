@@ -141,6 +141,10 @@ class VHandler {
          * @param {VercelResponse} response 响应对象
          */
         return function handler(request, response) {
+            if (request.method.toUpperCase() === 'OPTIONS') {
+                response.status(200).end();
+                return;
+            }
             const params = Object.assign({}, request.query, request.body);
             response.setHeader('Content-Type', 'text/html;charset=UTF-8');
             if (!methodCheck(request.method)) {
@@ -233,12 +237,18 @@ export const JWT = {
      * JWT校验
      *
      * @param {string} token token
+     * @param {boolean} [ignoreExpiration] 是否忽略过期
      */
-    verify: (token) => {
+    verify: (token, ignoreExpiration) => {
         if (!process.env.JWT_SECRET_KEY) {
             throw new Error('缺少环境变量`JWT_SECRET_KEY`');
         }
-        return jsonwebtoken.verify(token, process.env.JWT_SECRET_KEY);
+        const data = jsonwebtoken.verify(token, process.env.JWT_SECRET_KEY, { ignoreExpiration });
+        if (ignoreExpiration) {
+            delete data['iat'];
+            delete data['exp'];
+        }
+        return data;
     }
 };
 
