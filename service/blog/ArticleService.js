@@ -234,6 +234,7 @@ class ArticleService extends BaseService {
             article.top_time = top_time === 'null' ? undefined : top_time;
         }
 
+        article.update_time = new Date();
         return await article.save();
     }
 
