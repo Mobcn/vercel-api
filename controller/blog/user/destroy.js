@@ -9,8 +9,8 @@ export default VHandler.buildPOSTAndAuth(
      * @param {Object} param0 请求参数
      * @param {string} param0.id 主键ID
      */
-    async ({ id }) => {
-        await userService.destroy(id);
+    async ({ _id }) => {
+        await userService.destroy(_id);
         return Result.success({ message: '删除成功!' });
     }
 );
