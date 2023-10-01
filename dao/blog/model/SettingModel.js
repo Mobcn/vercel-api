@@ -28,6 +28,10 @@ const info = {
         is_public: {
             type: Boolean,
             default: false
+        },
+        create_time: {
+            type: Date,
+            default: Date.now
         }
     }
 };

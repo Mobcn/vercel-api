@@ -14,10 +14,16 @@ const info = {
         tag: {
             type: String,
             required: true
+        },
+        create_time: {
+            type: Date,
+            default: Date.now
         }
     }
 };
 
 export const Model = mongoose.model(info.model, new Schema(info.property), info.table);
 
-/** @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} ArticleTag */
+/**
+ * @typedef {import('#dao/BaseDAO').RawDocType<typeof Model>} ArticleTag
+ */
