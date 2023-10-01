@@ -192,7 +192,7 @@ class ArticleService extends BaseService {
      * @param {string} [param0.category] 分类
      * @param {string[]} [param0.tags] 标签
      * @param {string} [param0.top_time] 置顶时间
-     * @param {string} [param0.status] 状态
+     * @param {number} [param0.status] 状态
      * @param {import('#dao/blog/model/UserModel').User} param0.user 当前用户
      */
     async updateById({ _id, title, description, content, cover, category, tags, top_time, status, user }) {

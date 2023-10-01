@@ -19,6 +19,7 @@ export default VHandler.buildPOSTAndAuth(
      */
     async ({ _id, title, description, content, cover, category, tags, top_time, status, __token_data__ }) => {
         tags && (tags = tags.split(','));
+        status && (status = Number(status));
         await articleService.updateById({
             _id,
             title,

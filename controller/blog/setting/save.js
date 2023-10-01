@@ -17,7 +17,7 @@ export default VHandler.buildPOSTAndAuth(
         if (!__token_data__.is_admin) {
             throw new Error('没有权限!');
         }
-        is_public && (is_public = Boolean(is_public));
+        is_public && (is_public = is_public === 'true');
         const result = await settingService.save({ key, value, description, is_public });
         return Result.success({ message: '保存成功!', data: result });
     }
