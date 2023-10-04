@@ -70,7 +70,8 @@ class ArticleService extends BaseService {
         author && condition.push({ author });
 
         // 获取文章列表
-        const { list: articleList, total } = await articleDAO.page({ filter: { $and: condition }, page, limit });
+        const { list, total } = await articleDAO.page({ filter: { $and: condition }, page, limit });
+        const articleList = list.map((item) => ({ ...item.toJSON(), _id: item._id.toString() }));
 
         // 获取文章分类名称
         const categorySet = new Set(articleList.filter((item) => item.category).map((item) => item.category));
@@ -78,7 +79,7 @@ class ArticleService extends BaseService {
             const categoryIds = Array.from(categorySet);
             const categoryDAO = await ArticleService.getCategoryDAO();
             const categoryList = await categoryDAO.list({ filter: { _id: { $in: categoryIds } } });
-            const categoryMap = new Map(categoryList.map((item) => [item._id, item.name]));
+            const categoryMap = new Map(categoryList.map((item) => [item._id.toString(), item.name]));
             for (const item of articleList) {
                 item.category && (item.categoryName = categoryMap.get(item.category));
             }
@@ -92,12 +93,12 @@ class ArticleService extends BaseService {
             const tagIds = Array.from(new Set(articleTagList.map((item) => item.tag)));
             const tagDAO = await ArticleService.getTagDAO();
             const tagList = await tagDAO.list({ filter: { _id: { $in: tagIds } } });
-            const tagMap = new Map(tagList.map((item) => [item._id, item.name]));
+            const tagMap = new Map(tagList.map((item) => [item._id.toString(), item.name]));
             const articleTagMap = new Map();
             for (const { article, tag } of articleTagList) {
                 let tags = articleTagMap.get(article);
                 if (!tags) {
-                    tags = [{ _id: tag, name: tagMap.get(tag) }];
+                    tags = [];
                     articleTagMap.set(article, tags);
                 }
                 tags.push({ _id: tag, name: tagMap.get(tag) });
@@ -143,7 +144,7 @@ class ArticleService extends BaseService {
                 const tagIds = articleTagList.map((item) => item.tag);
                 const tagDAO = await ArticleService.getTagDAO();
                 const tagList = await tagDAO.list({ filter: { _id: { $in: tagIds } } });
-                const tagMap = new Map(tagList.map((item) => [item._id, item.name]));
+                const tagMap = new Map(tagList.map((item) => [item._id.toString(), item.name]));
                 article.tags = tagIds.map((item) => ({ _id: item, name: tagMap.get(item) }));
             }
         }

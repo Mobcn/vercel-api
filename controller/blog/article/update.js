@@ -20,7 +20,7 @@ export default VHandler.buildPOSTAndAuth(
     async ({ _id, title, description, content, cover, category, tags, top_time, status, __token_data__ }) => {
         tags && (tags = tags.split(','));
         status && (status = Number(status));
-        await articleService.updateById({
+        const result = await articleService.updateById({
             _id,
             title,
             description,
@@ -32,6 +32,6 @@ export default VHandler.buildPOSTAndAuth(
             status,
             user: __token_data__
         });
-        return Result.success({ message: '更新成功!' });
+        return Result.success({ message: '更新成功!', data: result });
     }
 );

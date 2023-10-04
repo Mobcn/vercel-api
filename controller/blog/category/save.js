@@ -4,7 +4,7 @@ import { categoryService } from '#service/blog/CategoryService.js';
 /**
  * 保存分类
  */
-export default VHandler.buildPOST(
+export default VHandler.buildPOSTAndAuth(
     /**
      * @param {Object} param0 请求参数
      * @param {string} param0.name 名称
