@@ -35,7 +35,7 @@ class ArticleService extends BaseService {
     }
 
     /**
-     * 获取文章列表
+     * 获取文章分页列表
      *
      * @param {Object} param0 查询参数
      * @param {string} [param0.key] 模糊匹配key（匹配title、description、content）
@@ -47,7 +47,7 @@ class ArticleService extends BaseService {
      * @param {string} [param0.page] 分页
      * @param {string} [param0.limit] 每页数据条数
      */
-    async list({ key, startTime, endTime, categories, tags, author, page, limit }) {
+    async page({ key, startTime, endTime, categories, tags, author, page, limit }) {
         // 组织查询条件
         const condition = [{ status: 1 }];
         if (tags?.length > 0) {
@@ -70,17 +70,14 @@ class ArticleService extends BaseService {
         author && condition.push({ author });
 
         // 获取文章列表
-        const articleList = await articleDAO.list({ filter: { $and: condition }, page, limit });
+        const { list: articleList, total } = await articleDAO.page({ filter: { $and: condition }, page, limit });
 
         // 获取文章分类名称
         const categorySet = new Set(articleList.filter((item) => item.category).map((item) => item.category));
         if (categorySet.size > 0) {
             const categoryIds = Array.from(categorySet);
             const categoryDAO = await ArticleService.getCategoryDAO();
-            const categoryList = await categoryDAO.list({
-                filter: { _id: { $in: categoryIds } },
-                limit: categoryIds.length
-            });
+            const categoryList = await categoryDAO.list({ filter: { _id: { $in: categoryIds } } });
             const categoryMap = new Map(categoryList.map((item) => [item._id, item.name]));
             for (const item of articleList) {
                 item.category && (item.categoryName = categoryMap.get(item.category));
@@ -90,11 +87,11 @@ class ArticleService extends BaseService {
         // 获取文章标签
         const articleIds = articleList.map((item) => item._id);
         const articleTagDAO = await ArticleService.getArticleTagDAO();
-        const articleTagList = await articleTagDAO.list({ filter: { article: { $in: articleIds } }, limit: 99999999 });
+        const articleTagList = await articleTagDAO.list({ filter: { article: { $in: articleIds } } });
         if (articleTagList.length > 0) {
             const tagIds = Array.from(new Set(articleTagList.map((item) => item.tag)));
             const tagDAO = await ArticleService.getTagDAO();
-            const tagList = await tagDAO.list({ filter: { _id: { $in: tagIds } }, limit: 99999999 });
+            const tagList = await tagDAO.list({ filter: { _id: { $in: tagIds } } });
             const tagMap = new Map(tagList.map((item) => [item._id, item.name]));
             const articleTagMap = new Map();
             for (const { article, tag } of articleTagList) {
@@ -110,7 +107,10 @@ class ArticleService extends BaseService {
             }
         }
 
-        return articleList.map((item) => Object.assign(item, { status: undefined, __v: undefined }));
+        return {
+            list: articleList.map((item) => Object.assign(item, { status: undefined, __v: undefined })),
+            total
+        };
     }
 
     /**
@@ -138,11 +138,11 @@ class ArticleService extends BaseService {
 
             // 获取文章标签
             const articleTagDAO = await ArticleService.getArticleTagDAO();
-            const articleTagList = await articleTagDAO.list({ filter: { article: article._id }, limit: 99999999 });
+            const articleTagList = await articleTagDAO.list({ filter: { article: article._id } });
             if (articleTagList.length > 0) {
                 const tagIds = articleTagList.map((item) => item.tag);
                 const tagDAO = await ArticleService.getTagDAO();
-                const tagList = await tagDAO.list({ filter: { _id: { $in: tagIds } }, limit: 99999999 });
+                const tagList = await tagDAO.list({ filter: { _id: { $in: tagIds } } });
                 const tagMap = new Map(tagList.map((item) => [item._id, item.name]));
                 article.tags = tagIds.map((item) => ({ _id: item, name: tagMap.get(item) }));
             }
@@ -211,7 +211,7 @@ class ArticleService extends BaseService {
         // 修改标签
         if (tags) {
             const articleTagDAO = await ArticleService.getArticleTagDAO();
-            const articleTagList = await articleTagDAO.list({ filter: { article: _id }, limit: 99999999 });
+            const articleTagList = await articleTagDAO.list({ filter: { article: _id } });
             const tagIds = articleTagList.map((item) => item.tag);
             await Promise.all(
                 articleTagDAO.delete({

@@ -19,6 +19,6 @@ export default VHandler.buildGET(
     async ({ key, startTime, endTime, categories, tags, author, page, limit }) => {
         categories && (categories = categories.split(','));
         tags && (tags = tags.split(','));
-        return await articleService.list({ key, startTime, endTime, categories, tags, author, page, limit });
+        return await articleService.page({ key, startTime, endTime, categories, tags, author, page, limit });
     }
 );

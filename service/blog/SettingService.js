@@ -11,11 +11,30 @@ import { settingDAO } from '#dao/blog/SettingDAO.js';
  */
 class SettingService extends BaseService {
     /**
-     * @param {boolean} isPublic 是否为公告配置
+     * 获取所有配置
+     *
+     * @param {Object} [param0] 参数
+     * @param {boolean} [param0.isPublic=true] 是否为公告配置
      */
-    async list(isPublic = true) {
-        const settingList = await this.DAO.list({ filter: { is_public: isPublic }, limit: 99999999 });
+    async list({ isPublic = true }) {
+        const settingList = await this.DAO.list({ filter: { is_public: isPublic } });
         return settingList.map((item) => ({ key: item.key, value: item.value }));
+    }
+
+    /**
+     * 获取配置分页列表
+     *
+     * @param {Object} param0 参数
+     * @param {number} [param0.page] 页数
+     * @param {number} [param0.limit] 每页数据条数
+     * @param {boolean} [param0.isPublic=true] 是否为公告配置
+     */
+    async page({ page, limit, isPublic = true }) {
+        const { list: settingList, total } = await this.DAO.page({ filter: { is_public: isPublic }, page, limit });
+        return {
+            list: settingList.map((item) => ({ key: item.key, value: item.value })),
+            total
+        };
     }
 }
 

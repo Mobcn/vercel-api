@@ -1,4 +1,4 @@
-import VHandler, { JWT } from '#handler';
+import VHandler from '#handler';
 import { settingService } from '#service/blog/SettingService.js';
 
 /**
@@ -6,18 +6,22 @@ import { settingService } from '#service/blog/SettingService.js';
  */
 export default VHandler.buildGET(
     /**
-     * @param {import('#handler').VercelRequest} request
+     * @param {Object} param0 请求参数
+     * @param {string | number} [param0.page] 页数
+     * @param {string | number} [param0.limit] 每页数据条数
      */
-    async ({}, request) => {
+    async ({ page, limit }) => {
+        page && (page = Number(page)) <= 0 && (page = undefined);
+        limit && (limit = Number(limit)) <= 0 && (limit = undefined);
         const authorization = request.headers['authorization'];
         if (authorization?.startsWith('Bearer ')) {
             const token = authorization.replace('Bearer ', '');
             try {
                 /** @type {import('#dao/blog/model/UserModel').User} */
                 const user = JWT.verify(token);
-                return await settingService.list(!user.is_admin);
+                return await settingService.page({ page, limit, isPublic: !user.is_admin });
             } catch (error) {}
         }
-        return settingService.list();
+        return await settingService.page({ page, limit });
     }
 );
