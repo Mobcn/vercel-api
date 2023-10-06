@@ -14,7 +14,7 @@ export default VHandler.buildPOSTAndAuth(
         if (!__token_data__.is_admin) {
             throw new Error('没有权限!');
         }
-        await tagService.removeById(_id);
-        Result.success({ message: '删除成功!' });
+        const result = await tagService.removeById(_id);
+        return Result.success({ message: '删除成功!', data: result });
     }
 );

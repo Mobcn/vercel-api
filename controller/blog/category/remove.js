@@ -14,7 +14,13 @@ export default VHandler.buildPOSTAndAuth(
         if (!__token_data__.is_admin) {
             throw new Error('没有权限!');
         }
-        await categoryService.removeById(_id);
-        Result.success({ message: '删除成功!' });
+        const ids = _id.split(',');
+        let result;
+        if (ids.length === 1) {
+            result = await categoryService.removeById(_id);
+        } else {
+            result = await categoryService.removeByIds(ids);
+        }
+        return Result.success({ message: '删除成功!', data: result });
     }
 );

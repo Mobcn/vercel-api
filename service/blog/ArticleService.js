@@ -19,7 +19,7 @@ class ArticleService extends BaseService {
     }
 
     /**
-     * 获取articleTagDAO
+     * 获取tagDAO
      */
     static async getTagDAO() {
         const { tagDAO } = await import('#dao/blog/TagDAO.js');
