@@ -31,7 +31,14 @@ export default VHandler.buildPOST(
         }
         if (!resultToken) {
             const user = await userService.login(username, password);
-            resultToken = JWT.sign(user.toJSON());
+            resultToken = JWT.sign({
+                _id: user._id.toString(),
+                username: user.username,
+                nickname: user.nickname,
+                avatar: user.avatar,
+                is_admin: user.is_admin,
+                status: user.status
+            });
         }
         return Result.success({ message: '登录成功!', data: { token: resultToken } });
     }
