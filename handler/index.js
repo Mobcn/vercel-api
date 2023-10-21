@@ -45,11 +45,12 @@ class VHandler {
         const vHandler = new VHandler();
         if (setting?.methods) {
             if (typeof setting.methods === 'string') {
-                vHandler.setting.methods = setting.methods.toUpperCase();
+                setting.methods = setting.methods.toUpperCase();
             } else {
-                vHandler.setting.methods = setting.methods.map((m) => m.toUpperCase());
+                setting.methods = setting.methods.map((m) => m.toUpperCase());
             }
         }
+        Object.assign(vHandler.setting, setting);
         return vHandler;
     }
 
